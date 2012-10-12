@@ -25,7 +25,7 @@
 /******************************************************************************
  *
  *****************************************************************************/
-int main()
+int main(int argc, const char *argv[])
 {
     using clang::CompilerInstance;
     using clang::TargetOptions;
@@ -54,7 +54,7 @@ int main()
     ci.createASTContext();
     ci.createSema(clang::TU_Complete, NULL);
 
-	const FileEntry *pFile = ci.getFileManager().getFile("test.c");
+	const FileEntry *pFile = ci.getFileManager().getFile(argv[1]);
     ci.getSourceManager().createMainFileID(pFile);
     ci.getPreprocessor().EnterMainSourceFile();
     ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(),
