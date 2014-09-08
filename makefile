@@ -1,9 +1,10 @@
 CXX := clang++
 LLVMCOMPONENTS := cppbackend
 RTTIFLAG := -fno-rtti
-#RTTIFLAG :=
-CXXFLAGS := $(shell llvm-config --cxxflags) $(RTTIFLAG)
-LLVMLDFLAGS := $(shell llvm-config --ldflags --libs $(LLVMCOMPONENTS))
+LLVMCONFIG := /Users/loarabia/Code/build_llvm/Debug+Asserts/bin/llvm-config
+
+CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(RTTIFLAG)
+LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
 
 SOURCES = tutorial1.cpp \
     tutorial2.cpp \
@@ -16,11 +17,14 @@ SOURCES = tutorial1.cpp \
     CItutorial4.cpp \
     CItutorial6.cpp \
     CIBasicRecursiveASTVisitor.cpp \
-    CIrewriter.cpp
+    CIrewriter.cpp \
+    ToolingTutorial.cpp \
+    CommentHandling.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 EXES = $(OBJECTS:.o=)
 CLANGLIBS = \
+				-lclangTooling\
 				-lclangFrontendTool\
 				-lclangFrontend\
 				-lclangDriver\
@@ -39,7 +43,9 @@ CLANGLIBS = \
 				-lclangAST\
 				-lclangLex\
 				-lclangBasic\
-				$(shell llvm-config --libs)
+				$(shell $(LLVMCONFIG) --libs)\
+				$(shell $(LLVMCONFIG) --system-libs)\
+                -lcurses
 
 all: $(OBJECTS) $(EXES)
 
